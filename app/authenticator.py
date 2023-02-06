@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from os import environ
+from typing import Optional
 
 from app.api.deps import get_session
 from app.models.authentication import User
@@ -9,6 +10,8 @@ from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.schemas.authentication import UserType,UserDataSchema
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 ALGORITHM = "HS256"
@@ -32,8 +35,8 @@ class Authenticator:
     ):
         try:
             payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
-            if username := payload.get("sub"):
-                if user := await User.get_from_username(session, username):
+            if email := payload.get("sub"):
+                if user := await User.get_from_email(session, email):
                     return user
 
         except JWTError as exc:
@@ -42,20 +45,21 @@ class Authenticator:
         raise AppError.CREDENTIALS_ERROR
 
     @classmethod
-    async def login(cls, session: AsyncSession, username: str, password: str) -> bool:
-        if not (credentials := await User.get_from_username(session, username)):
-            return False
+    async def login(cls, session: AsyncSession, email: str, password: str) -> Optional[UserDataSchema]:
+        if not (credentials := await User.get_from_email(session, email)):
+            return None
         if not cls.pwd_context.verify(password, credentials.password):
-            return False
-        return True
+            return None
+        return UserDataSchema(email=credentials.email, type=credentials.type)
 
     @classmethod
     async def register(
-        cls, session: AsyncSession, username: str, password: str
+        cls, session: AsyncSession, email: str, password: str, type: UserType
     ) -> bool:
         account = User(
-            username=username,
+            email=email,
             password=cls.pwd_context.hash(password),
+            type=type
         )
         return await account.save(session)
 

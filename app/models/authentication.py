@@ -6,19 +6,15 @@ from sqlalchemy import Column, Index, Integer, String
 from sqlalchemy import exc as SQLAlchemyExceptions
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.sql.expression import text
 
 
 class User(Base):
-
     __tablename__ = "credentials"
-    __table_args__ = (
-        Index("username_case_sensitive_index", text("upper(username)"), unique=True),
-    )
 
     user_id = Column(Integer, primary_key=True)
-    username = Column(String, nullable=False, unique=True)
+    email = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
+    type = Column(String, nullable=False)
 
     async def save(self, session: AsyncSession):
         try:
@@ -32,9 +28,9 @@ class User(Base):
             raise AppError.USERNAME_EXISTS_ERROR from exc
 
     @classmethod
-    async def get_from_username(cls, session: AsyncSession, username: str):
+    async def get_from_email(cls, session: AsyncSession, email: str):
         try:
-            stmt = select(User).where(User.username.ilike(username))
+            stmt = select(User).where(User.email.ilike(email))
             result = await session.execute(stmt)
             return result.scalars().one()
 
