@@ -1,0 +1,38 @@
+services:
+  backend:
+    container_name: h4g_backend
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    restart: unless-stopped
+    env_file:
+      - app.env
+
+  proxy:
+    container_name: h4g_proxy
+    image: caddy:2.6.2-alpine
+    ports:
+      - '80:80'
+      - '443:443'
+      - '8000:8000'
+    restart: unless-stopped
+    env_file:
+      - app.env
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+
+  db:
+    container_name: h4g_db
+    image: postgres:14.6
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    env_file:
+      - db.env
+
+volumes:
+  caddy_data:
+  caddy_config:
