@@ -40,7 +40,7 @@ jobs:
           username: kinji
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker compose down
             cd backend
+            docker compose down
             git pull
             make deploy
