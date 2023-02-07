@@ -21,13 +21,14 @@ services:
     env_file:
       - db.env
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql/data
     networks:
       - h4g_deploy
 
 volumes:
   caddy_data:
   caddy_config:
+  pgdata:
 
 networks:
   h4g_deploy:
