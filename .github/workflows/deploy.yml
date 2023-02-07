@@ -29,23 +29,15 @@ jobs:
       - name: Build backend image
         run: docker compose -f deploy.docker-compose.yml build
         id: build-image
-        
-      - name: Save build file
-        uses: actions/upload-artifact@v3.1.2
-        with:
-          name: build-image
-          path: .
 
       - name: Deploy to server
         uses: appleboy/ssh-action@master
+        needs: build-image
         with:
           host: kitsuiro.com
           username: kinji
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            sudo apt-get update
-            sudo apt-get install -y docker.io
-            sudo docker load < $(find $GITHUB_WORKSPACE -name "*.tar")
-            sudo docker-compose up -d
-        env:
-          BUILD_ARTIFACTS: ${{ steps.build-image.outputs.id }}
+            cd backend
+            git pull
+            make deploy
