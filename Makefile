@@ -20,7 +20,7 @@ d_migrate:
 	$(docker_deploy_run) alembic upgrade head
 
 dev:
-	$(docker_dev_run) up -d --build
+	$(docker_dev) up -d --build
 
 deploy:
-	$(docker_deploy_run) up -d --build
+	$(docker_deploy) up -d --build
