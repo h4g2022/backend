@@ -12,13 +12,8 @@ router = APIRouter()
 
 @router.post("/create")
 async def auth_create(data: UserSchema, session: AsyncSession = Depends(get_session)):
-    try:
-        validation = validate_email(data.email, check_deliverability=True)
-        email = validation.email
-        await Authenticator.register(session, email, data.password, data.type)
-        return {"email": data.email, "status": "Successfully created account."}
-    except EmailNotValidError:
-        raise AppError.EMAIL_NOT_VALID_ERROR
+    await Authenticator.register(session, data.email, data.password, data.type)
+    return {"email": data.email, "status": "Successfully created account."}
 
 
 @router.post("/login")

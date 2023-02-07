@@ -1,5 +1,6 @@
 from enum import Enum
 from pydantic import BaseModel
+from pydantic.networks import EmailStr
 
 
 class UserType(str, Enum):
@@ -9,16 +10,16 @@ class UserType(str, Enum):
 
 
 class UserSchema(BaseModel):
-    email: str
+    email: EmailStr
     password: str
     type: UserType
 
 
 class UserLoginSchema(BaseModel):
-    email: str
+    email: EmailStr
     password: str
 
 
 class UserDataSchema(BaseModel):
-    email: str
+    email: EmailStr
     type: UserType
