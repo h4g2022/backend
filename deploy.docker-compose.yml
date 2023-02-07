@@ -17,8 +17,6 @@ services:
   db:
     container_name: h4g_db
     image: postgres:14.6
-    ports:
-      - '5432:5432'
     restart: unless-stopped
     env_file:
       - db.env
@@ -26,3 +24,8 @@ services:
 volumes:
   caddy_data:
   caddy_config:
+
+networks:
+  h4g_deploy:
+    name: h4g_deploy
+    external: true
