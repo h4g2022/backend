@@ -20,6 +20,11 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      
+      - name: Write env files
+        run: |
+          echo "${{ secrets.APP_ENV_FILE }}" > app.env
+          echo "${{ secrets.DB_ENV_FILE }}" > db.env
 
       - name: Build backend image
         run: docker compose -f deploy.docker-compose.yml build
