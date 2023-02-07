@@ -1,0 +1,28 @@
+services:
+  backend:
+    container_name: h4g_backend
+    build: .
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    restart: unless-stopped
+    env_file:
+      - app.env
+    volumes:
+      - ./app:/app/app
+      - ./migrations:/app/migrations
+    networks:
+      - h4g_deploy
+
+  db:
+    container_name: h4g_db
+    image: postgres:14.6
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    env_file:
+      - db.env
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -9,5 +9,8 @@ generate:
 migrate:
 	$(docker_backend) alembic upgrade head
 
-run:
-	docker compose up -d --build
+dev:
+	docker compose up -f dev.docker-compose.yml -d --build
+
+deploy:
+	docker compose up -f deploy.docker-compose.yml -d --build
