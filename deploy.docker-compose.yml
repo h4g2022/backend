@@ -20,6 +20,8 @@ services:
     restart: unless-stopped
     env_file:
       - db.env
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
     networks:
       - h4g_deploy
 
