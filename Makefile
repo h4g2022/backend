@@ -1,4 +1,4 @@
-docker_dev := docker compose -f dev.docker-compose.yml
+docker_dev := docker compose -f docker-compose.yml
 docker_deploy := docker compose -f deploy.docker-compose.yml
 
 docker_dev_run := $(docker_dev) run --rm backend
