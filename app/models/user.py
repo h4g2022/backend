@@ -2,19 +2,19 @@ from __future__ import annotations
 
 from app.db.base_class import Base
 from app.exceptions import AppError
-from sqlalchemy import Column, Index, Integer, String
+from sqlalchemy import Column, Integer, String, select
+from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import exc as SQLAlchemyExceptions
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class User(Base):
     __tablename__ = "credentials"
 
-    user_id = Column(Integer, primary_key=True)
-    email = Column(String, nullable=False, unique=True)
-    password = Column(String, nullable=False)
-    type = Column(String, nullable=False)
+    user_id: Mapped[int] = mapped_column(primary_key=True)
+    email: Mapped[str] = mapped_column(nullable=False, unique=True)
+    password: Mapped[str] = mapped_column(nullable=False)
+    type: Mapped[str] = mapped_column(nullable=False)
 
     async def save(self, session: AsyncSession):
         try:
