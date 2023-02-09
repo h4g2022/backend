@@ -13,7 +13,10 @@ class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
 
     id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(ForeignKey("credentials.email"), nullable=False)
+    email: Mapped[str] = mapped_column(
+        ForeignKey("credentials.email", ondelete="CASCADE", onupdate="CASCADE"),
+        nullable=False,
+    )
     token: Mapped[str] = mapped_column(nullable=False, unique=True)
     expires_at: Mapped[datetime] = mapped_column(nullable=False)
 

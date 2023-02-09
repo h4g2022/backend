@@ -69,7 +69,7 @@ class Authenticator:
     @classmethod
     async def register(
         cls, session: AsyncSession, email: str, password: str, type: UserType
-    ) -> bool:
+    ) -> User:
         account = User(email=email, password=cls.pwd_context.hash(password), type=type)
         return await account.save(session)
 

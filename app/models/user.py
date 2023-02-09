@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from app.db.base_class import Base
 from app.exceptions import AppError
-from sqlalchemy import Column, Integer, String, select
+from sqlalchemy import select
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import exc as SQLAlchemyExceptions
 from sqlalchemy.ext.asyncio import AsyncSession

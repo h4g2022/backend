@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-from email_validator import validate_email, EmailNotValidError
 
 from app.api.deps import get_session
 from app.authenticator import Authenticator
@@ -7,18 +6,26 @@ from app.schemas.authentication import (
     UserSchema,
     UserLoginSchema,
     UserCreateResponseSchema,
-    UserLoginResponseSchema, UserRefreshSchema, UserRefreshResponseSchema,
+    UserLoginResponseSchema,
+    UserRefreshSchema,
+    UserRefreshResponseSchema,
+    UserType,
 )
 from app.exceptions import AppError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models.talent import Talent
 
 router = APIRouter()
 
 
 @router.post("/create", response_model=UserCreateResponseSchema)
 async def auth_create(data: UserSchema, session: AsyncSession = Depends(get_session)):
-    await Authenticator.register(session, data.email, data.password, data.type)
-    return {"email": data.email, "status": "Successfully created account."}
+    res = await Authenticator.register(session, data.email, data.password, data.type)
+    if res.type == UserType.patient:
+        new_talent = Talent(user_id=res.user_id)
+        await new_talent.save(session)
+    return {"email": res.email, "status": "Successfully created account."}
 
 
 @router.post("/login", response_model=UserLoginResponseSchema)
@@ -43,7 +50,9 @@ async def auth_login(
 
 
 @router.post("/refresh", response_model=UserRefreshResponseSchema)
-async def auth_refresh_token(data: UserRefreshSchema, session: AsyncSession = Depends(get_session)):
+async def auth_refresh_token(
+    data: UserRefreshSchema, session: AsyncSession = Depends(get_session)
+):
     new_access_token = await Authenticator.refresh(data.refresh_token, session)
     return {
         "access_token": new_access_token,
