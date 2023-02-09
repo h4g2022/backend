@@ -15,20 +15,21 @@ class JobModeEnum(str, Enum):
     hybrid = "Hybrid"
     remote = "Remote"
 
-class TalentSchema(BaseModel):
-    talent_id: int
+
+class TalentBaseSchema(BaseModel):
     story: str
     job_types: List[JobTypeEnum]
     job_modes: List[JobModeEnum]
     job_title: str
     skills: List[str]
     availability: List[int]
-    #center_location: str
-    #weekly_hours: int
-    #treatment_type: str
     photo_url: str
     is_displayed: bool
     linkedin_url: str
+
+
+class TalentSchema(TalentBaseSchema):
+    talent_id: int
 
 
 class TalentDetailSchema(TalentSchema):

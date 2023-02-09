@@ -27,7 +27,7 @@ class AppError:
     )
 
     WRONG_USER_TYPE_ERROR = HTTPException(
-        status_code=status.HTTP_400_BAD_REQUEST,
+        status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Incorrect user type",
         headers={"WWW-Authenticate": "Bearer"},
     )

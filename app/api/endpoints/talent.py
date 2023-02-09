@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.exceptions import AppError
 from app.models.talent import Talent
 from app.schemas.authentication import UserType
-from app.schemas.talent import TalentSchema, TalentDetailSchema
+from app.schemas.talent import TalentSchema, TalentDetailSchema, TalentBaseSchema
 
 router = APIRouter()
 
@@ -63,7 +63,7 @@ async def get_self_listing(
 
 @router.put("/me", response_model=TalentSchema)
 async def update_self_listing(
-    data: TalentSchema,
+    data: TalentBaseSchema,
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session)
 ):

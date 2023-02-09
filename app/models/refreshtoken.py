@@ -36,6 +36,7 @@ class RefreshToken(Base):
             if res.expires_at < datetime.utcnow():
                 stmt = delete(RefreshToken).where(RefreshToken.token == token)
                 await session.execute(stmt)
+                await session.commit()
                 return None
 
             return res

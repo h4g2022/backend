@@ -8,24 +8,23 @@ class UserType(str, Enum):
     employer = "employer"
 
 
-class UserSchema(BaseModel):
+class UserBaseSchema(BaseModel):
     email: EmailStr
+
+
+class UserLoginSchema(UserBaseSchema):
     password: str
+
+
+class UserSchema(UserLoginSchema):
     type: UserType
 
 
-class UserCreateResponseSchema(BaseModel):
-    email: EmailStr
+class UserCreateResponseSchema(UserBaseSchema):
     status: str
 
 
-class UserLoginSchema(BaseModel):
-    email: EmailStr
-    password: str
-
-
-class UserDataSchema(BaseModel):
-    email: EmailStr
+class UserDataSchema(UserBaseSchema):
     type: UserType
 
 

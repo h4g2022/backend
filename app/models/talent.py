@@ -1,16 +1,16 @@
 from __future__ import annotations
 
-from typing import Optional, List
+from typing import Optional
 
 from app.db.base_class import Base
 from app.exceptions import AppError
-from sqlalchemy import select, update, ForeignKey, String, Integer, literal_column
+from sqlalchemy import select, update, ForeignKey, String, Integer
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import exc as SQLAlchemyExceptions
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.talent import TalentSchema
+from app.schemas.talent import TalentBaseSchema
 
 
 class Talent(Base):
@@ -58,7 +58,7 @@ class Talent(Base):
 
     @classmethod
     async def update_with_uid(
-            cls, data: TalentSchema, session: AsyncSession, uid: int
+            cls, data: TalentBaseSchema, session: AsyncSession, uid: int
     ) -> Optional[Talent]:
         stmt = (
             update(Talent)
@@ -67,6 +67,7 @@ class Talent(Base):
             .values(data.dict())
         )
         result = await session.execute(stmt)
+        await session.commit()
         return result.scalars().one()
 
     @classmethod

@@ -15,6 +15,7 @@ from app.exceptions import AppError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.talent import Talent
+from app.models.employer import Employer
 
 router = APIRouter()
 
@@ -25,6 +26,9 @@ async def auth_create(data: UserSchema, session: AsyncSession = Depends(get_sess
     if res.type == UserType.patient:
         new_talent = Talent(user_id=res.user_id)
         await new_talent.save(session)
+    elif res.type == UserType.employer:
+        new_employer = Employer(user_id=res.user_id)
+        await new_employer.save(session)
     return {"email": res.email, "status": "Successfully created account."}
 
 
