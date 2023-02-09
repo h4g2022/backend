@@ -20,10 +20,6 @@ class UserSchema(UserLoginSchema):
     type: UserType
 
 
-class UserCreateResponseSchema(UserBaseSchema):
-    status: str
-
-
 class UserDataSchema(UserBaseSchema):
     type: UserType
 

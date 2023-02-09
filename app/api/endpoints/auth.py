@@ -5,11 +5,10 @@ from app.authenticator import Authenticator
 from app.schemas.authentication import (
     UserSchema,
     UserLoginSchema,
-    UserCreateResponseSchema,
     UserLoginResponseSchema,
     UserRefreshSchema,
     UserRefreshResponseSchema,
-    UserType,
+    UserType, UserDataSchema,
 )
 from app.exceptions import AppError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -20,7 +19,7 @@ from app.models.employer import Employer
 router = APIRouter()
 
 
-@router.post("/create", response_model=UserCreateResponseSchema)
+@router.post("/create", response_model=UserLoginResponseSchema)
 async def auth_create(data: UserSchema, session: AsyncSession = Depends(get_session)):
     res = await Authenticator.register(session, data.email, data.password, data.type)
     if res.type == UserType.patient:
@@ -29,7 +28,18 @@ async def auth_create(data: UserSchema, session: AsyncSession = Depends(get_sess
     elif res.type == UserType.employer:
         new_employer = Employer(user_id=res.user_id)
         await new_employer.save(session)
-    return {"email": res.email, "status": "Successfully created account."}
+
+    access = Authenticator.create_access_token(data={"sub": res.email})
+    refresh = await Authenticator.create_refresh_token(
+        data={"sub": res.email}, session=session
+    )
+
+    return UserLoginResponseSchema(
+        data=UserDataSchema(email=res.email, type=res.type),
+        access_token=access,
+        refresh_token=refresh,
+        token_type="bearer"
+    )
 
 
 @router.post("/login", response_model=UserLoginResponseSchema)
