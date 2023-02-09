@@ -59,3 +59,10 @@ class Employer(Base):
         result = await session.execute(stmt)
         await session.commit()
         return result.scalars().one()
+
+    @classmethod
+    async def check_employer_reg(cls, session: AsyncSession, uid: int):
+        employer = await cls.fetch_with_uid(session, uid)
+        if not employer:
+            raise AppError.CREDENTIALS_ERROR
+        return employer.company != ""

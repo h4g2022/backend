@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from app.db.base_class import Base
 from app.exceptions import AppError
 from sqlalchemy import select
@@ -28,7 +30,7 @@ class User(Base):
             raise AppError.USERNAME_EXISTS_ERROR from exc
 
     @classmethod
-    async def get_from_email(cls, session: AsyncSession, email: str):
+    async def get_from_email(cls, session: AsyncSession, email: str) -> Optional[User]:
         try:
             stmt = select(User).where(User.email.ilike(email))
             result = await session.execute(stmt)

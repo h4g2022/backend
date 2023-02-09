@@ -13,6 +13,8 @@ from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.schemas.authentication import UserType, UserDataSchema
+from app.models.employer import Employer
+from app.models.talent import Talent
 
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 REFRESH_TOKEN_EXPIRE_MINUTES = 1440
@@ -91,4 +93,12 @@ class Authenticator:
         if not res:
             raise AppError.CREDENTIALS_ERROR
         else:
-            return cls.create_access_token({"sub": res.email})
+            user = await User.get_from_email(session, res.email)
+            if not user:
+                raise AppError.CREDENTIALS_ERROR
+            registered = False
+            if user.type == UserType.patient:
+                registered = await Talent.check_talent_reg(session, user.user_id)
+            elif user.type == UserType.employer:
+                registered = await Employer.check_employer_reg(session, user.user_id)
+            return cls.create_access_token({"sub": res.email}), registered

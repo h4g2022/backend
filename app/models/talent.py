@@ -58,7 +58,7 @@ class Talent(Base):
 
     @classmethod
     async def update_with_uid(
-            cls, data: TalentBaseSchema, session: AsyncSession, uid: int
+        cls, data: TalentBaseSchema, session: AsyncSession, uid: int
     ) -> Optional[Talent]:
         stmt = (
             update(Talent)
@@ -85,3 +85,17 @@ class Talent(Base):
 
         except SQLAlchemyExceptions.NoResultFound:
             return None
+
+    @classmethod
+    async def check_talent_reg(cls, session: AsyncSession, uid: int):
+        talent = await cls.fetch_with_uid(session, uid)
+        if not talent:
+            raise AppError.TALENT_NOT_EXISTS_ERROR
+        return (
+            (talent.story != "")
+            and (talent.job_types != [])
+            and (talent.job_modes != [])
+            and (talent.job_title != "")
+            and (talent.skills != [])
+            and (talent.availability != [])
+        )

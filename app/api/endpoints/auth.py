@@ -67,8 +67,9 @@ async def auth_login(
 async def auth_refresh_token(
     data: UserRefreshSchema, session: AsyncSession = Depends(get_session)
 ):
-    new_access_token = await Authenticator.refresh(data.refresh_token, session)
-    return {
-        "access_token": new_access_token,
-        "token_type": "bearer",
-    }
+    new_access_token, registered = await Authenticator.refresh(data.refresh_token, session)
+    return UserRefreshResponseSchema(
+        registered=registered,
+        access_token=new_access_token,
+        token_type="bearer"
+    )
