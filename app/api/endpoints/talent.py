@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.get("/all", response_model=List[TalentSchema])
-async def get_all_public_listings(
+async def get_all_public_talents(
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session),
 ):
@@ -33,7 +33,7 @@ async def get_all_public_listings(
 
 
 @router.get("/detail", response_model=TalentDetailSchema)
-async def get_detailed_public_listing(
+async def get_detailed_public_talent(
     tid: int,
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session),
@@ -48,7 +48,7 @@ async def get_detailed_public_listing(
 
 
 @router.get("/me", response_model=TalentSchema)
-async def get_self_listing(
+async def get_self_talent(
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session)
 ):
@@ -62,7 +62,7 @@ async def get_self_listing(
 
 
 @router.put("/me", response_model=TalentSchema)
-async def update_self_listing(
+async def update_self_talent(
     data: TalentBaseSchema,
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session)

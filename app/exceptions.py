@@ -20,6 +20,12 @@ class AppError:
         headers={"WWW-Authenticate": "Bearer"},
     )
 
+    ITEM_EXISTS_ERROR = HTTPException(
+        status_code=status.HTTP_409_CONFLICT,
+        detail="Item already exist",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
     WRONG_PASSWORD_ERROR = HTTPException(
         status_code=status.HTTP_400_BAD_REQUEST,
         detail="Incorrect credentials",
@@ -35,5 +41,17 @@ class AppError:
     TALENT_NOT_EXISTS_ERROR = HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,
         detail="Talent does not exist",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    LISTING_NOT_EXISTS_ERROR = HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Listing does not exist",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    NO_PERMISSION_ERROR = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="No permission to perform this action",
         headers={"WWW-Authenticate": "Bearer"},
     )

@@ -14,7 +14,7 @@ router = APIRouter()
 
 
 @router.get("/me", response_model=EmployerSchema)
-async def get_employer_self(
+async def get_self_employer(
         user: User = Depends(Authenticator.get_current_user),
         session: AsyncSession = Depends(get_session)
 ):

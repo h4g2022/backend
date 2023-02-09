@@ -5,10 +5,11 @@ from typing import Optional
 from app.db.base_class import Base
 from app.exceptions import AppError
 from sqlalchemy import select, update, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import exc as SQLAlchemyExceptions
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.models.user import User
 from app.schemas.employer import EmployerBaseSchema
 
 
@@ -22,6 +23,7 @@ class Employer(Base):
         unique=True,
     )
     company: Mapped[str] = mapped_column(nullable=False, server_default="")
+    user: Mapped["User"] = relationship()
 
     async def save(self, session: AsyncSession):
         try:
