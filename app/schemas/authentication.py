@@ -37,5 +37,6 @@ class UserRefreshSchema(BaseModel):
 
 class UserRefreshResponseSchema(BaseModel):
     registered: bool
+    user_type: UserType
     access_token: str
     token_type: str
