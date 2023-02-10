@@ -22,6 +22,7 @@ class Talent(Base):
         nullable=False,
         unique=True,
     )
+    name: Mapped[str] = mapped_column(nullable=False, server_default="")
     story: Mapped[str] = mapped_column(nullable=False, server_default="")
     job_types = mapped_column(ARRAY(String), nullable=False, server_default="{}")
     job_modes = mapped_column(ARRAY(String), nullable=False, server_default="{}")
@@ -93,6 +94,7 @@ class Talent(Base):
             raise AppError.TALENT_NOT_EXISTS_ERROR
         return (
             (talent.story != "")
+            and (talent.name != "")
             and (talent.job_types != [])
             and (talent.job_modes != [])
             and (talent.job_title != "")

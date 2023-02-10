@@ -18,6 +18,7 @@ class JobModeEnum(str, Enum):
 
 
 class TalentBaseSchema(BaseModel):
+    name: str
     story: str
     job_types: List[JobTypeEnum]
     job_modes: List[JobModeEnum]
