@@ -55,3 +55,15 @@ class AppError:
         detail="No permission to perform this action",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    WRONG_IMAGE_FORMAT_ERROR = HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Wrong image type",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    IMAGE_NOT_EXISTS_ERROR = HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail="Image does not exist",
+        headers={"WWW-Authenticate": "Bearer"},
+    )

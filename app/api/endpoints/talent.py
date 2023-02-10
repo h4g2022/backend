@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 from fastapi import APIRouter, Depends
@@ -10,7 +11,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.exceptions import AppError
 from app.models.talent import Talent
 from app.schemas.authentication import UserType
-from app.schemas.talent import TalentSchema, TalentDetailSchema, TalentBaseSchema
+from app.schemas.talent import TalentSchema, TalentDetailSchema, TalentBaseSchema, TalentEditSchema, TalentFullSchema
+from app.models.image import Image
 
 router = APIRouter()
 
@@ -47,7 +49,7 @@ async def get_detailed_public_talent(
         return TalentDetailSchema(**talent.__dict__)
 
 
-@router.get("/me", response_model=TalentSchema)
+@router.get("/me", response_model=TalentDetailSchema)
 async def get_self_talent(
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session)
@@ -58,14 +60,18 @@ async def get_self_talent(
     if not talent:
         raise AppError.CREDENTIALS_ERROR
     else:
-        return TalentSchema(**talent.__dict__)
+        return TalentDetailSchema(**talent.__dict__)
 
 
 @router.put("/me", response_model=TalentSchema)
 async def update_self_talent(
-    data: TalentBaseSchema,
+    data: TalentEditSchema,
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session)
 ):
+    if not await Image.verify_image(session, data.photo_id, user.user_id):
+        raise AppError.IMAGE_NOT_EXISTS_ERROR
+    image_url = f"{os.environ['IMAGE_URL']}/{data.photo_id}"
+    data = TalentFullSchema(**data.dict(), photo_url=image_url)
     updated = await Talent.update_with_uid(data, session, user.user_id)
     return TalentSchema(**updated.__dict__)

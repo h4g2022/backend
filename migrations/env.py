@@ -8,6 +8,7 @@ import app.models.refreshtoken
 import app.models.talent
 import app.models.employer
 import app.models.listing
+import app.models.image
 
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool

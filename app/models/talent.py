@@ -10,7 +10,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy import exc as SQLAlchemyExceptions
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.talent import TalentBaseSchema
+from app.schemas.talent import TalentBaseSchema, TalentFullSchema
 
 
 class Talent(Base):
@@ -58,7 +58,7 @@ class Talent(Base):
 
     @classmethod
     async def update_with_uid(
-        cls, data: TalentBaseSchema, session: AsyncSession, uid: int
+        cls, data: TalentFullSchema, session: AsyncSession, uid: int
     ) -> Optional[Talent]:
         stmt = (
             update(Talent)

@@ -1,5 +1,6 @@
 from enum import Enum
 from typing import List
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -23,16 +24,30 @@ class TalentBaseSchema(BaseModel):
     job_title: str
     skills: List[str]
     availability: List[int]
-    photo_url: str
     is_displayed: bool
     linkedin_url: str
 
 
 class TalentSchema(TalentBaseSchema):
     talent_id: int
+    photo_url: str
 
 
 class TalentDetailSchema(TalentSchema):
+    center_location: str
+    weekly_hours: int
+    treatment_type: str
+
+
+class TalentEditSchema(TalentBaseSchema):
+    photo_id: UUID
+    center_location: str
+    weekly_hours: int
+    treatment_type: str
+
+
+class TalentFullSchema(TalentBaseSchema):
+    photo_url: str
     center_location: str
     weekly_hours: int
     treatment_type: str
