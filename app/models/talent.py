@@ -6,11 +6,12 @@ from app.db.base_class import Base
 from app.exceptions import AppError
 from sqlalchemy import select, update, ForeignKey, String, Integer
 from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from sqlalchemy import exc as SQLAlchemyExceptions
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schemas.talent import TalentBaseSchema, TalentFullSchema
+from app.schemas.talent import TalentFullSchema
+from app.models.user import User
 
 
 class Talent(Base):
@@ -35,6 +36,7 @@ class Talent(Base):
     photo_url: Mapped[str] = mapped_column(nullable=False, server_default="")
     is_displayed: Mapped[bool] = mapped_column(nullable=False, server_default="false")
     linkedin_url: Mapped[str] = mapped_column(nullable=False, server_default="")
+    user: Mapped["User"] = relationship()
 
     async def save(self, session: AsyncSession):
         try:
@@ -80,7 +82,7 @@ class Talent(Base):
     @classmethod
     async def fetch_with_tid(cls, session: AsyncSession, tid: int) -> Optional[Talent]:
         try:
-            stmt = select(Talent).where(Talent.talent_id == tid)
+            stmt = select(Talent).where(Talent.talent_id == tid).join(User).options(selectinload(Talent.user))
             result = await session.execute(stmt)
             return result.scalars().one()
 

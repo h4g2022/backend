@@ -47,7 +47,7 @@ async def get_detailed_public_talent(
     if not talent:
         raise AppError.TALENT_NOT_EXISTS_ERROR
     else:
-        return TalentDetailSchema(**talent.__dict__)
+        return TalentDetailSchema(**talent.__dict__, email=talent.user.email)
 
 
 @router.get("/me", response_model=TalentDetailSchema)

@@ -3,6 +3,7 @@ from typing import List,  Union
 from uuid import UUID
 
 from pydantic import BaseModel
+from pydantic.networks import EmailStr
 
 
 class JobTypeEnum(str, Enum):
@@ -35,6 +36,7 @@ class TalentSchema(TalentBaseSchema):
 
 
 class TalentDetailSchema(TalentSchema):
+    email: EmailStr
     center_location: str
     weekly_hours: int
     treatment_type: str
