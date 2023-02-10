@@ -1,5 +1,6 @@
 import os
 from typing import List
+from uuid import UUID
 
 from fastapi import APIRouter, Depends
 
@@ -63,15 +64,29 @@ async def get_self_talent(
         return TalentDetailSchema(**talent.__dict__)
 
 
+def is_valid_uuid(value: str):
+    try:
+        UUID(value)
+        return True
+    except ValueError:
+        return False
+
 @router.put("/me", response_model=TalentSchema)
 async def update_self_talent(
     data: TalentEditSchema,
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session)
 ):
-    if not await Image.verify_image(session, data.photo_id, user.user_id):
-        raise AppError.IMAGE_NOT_EXISTS_ERROR
-    image_url = f"{os.environ['IMAGE_URL']}/{data.photo_id}"
-    data = TalentFullSchema(**data.dict(), photo_url=image_url)
+
+    if is_valid_uuid(data.photo_id):
+        if not await Image.verify_image(session, data.photo_id, user.user_id):
+            raise AppError.IMAGE_NOT_EXISTS_ERROR
+        image_url = f"{os.environ['IMAGE_URL']}/{data.photo_id}"
+        data = TalentFullSchema(**data.dict(), photo_url=image_url)
+    else:
+        if data.photo_id != "":
+            raise AppError.IMAGE_NOT_EXISTS_ERROR
+        else:
+            data = TalentFullSchema(**data.dict(), photo_url="")
     updated = await Talent.update_with_uid(data, session, user.user_id)
     return TalentSchema(**updated.__dict__)

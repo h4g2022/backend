@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List,  Union
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -40,7 +40,7 @@ class TalentDetailSchema(TalentSchema):
 
 
 class TalentEditSchema(TalentBaseSchema):
-    photo_id: UUID
+    photo_id: Union[str, UUID]
     center_location: str
     weekly_hours: int
     treatment_type: str
