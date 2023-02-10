@@ -40,3 +40,12 @@ class UserRefreshResponseSchema(BaseModel):
     user_type: UserType
     access_token: str
     token_type: str
+
+
+class StatusEnum(str, Enum):
+    success = "success"
+    failure = "failure"
+
+
+class LogoutResponseSchema(BaseModel):
+    status: StatusEnum

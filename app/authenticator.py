@@ -102,3 +102,7 @@ class Authenticator:
             elif user.type == UserType.employer:
                 registered = await Employer.check_employer_reg(session, user.user_id)
             return cls.create_access_token({"sub": res.email}), registered, user.type
+
+    @classmethod
+    async def logout(cls, session: AsyncSession, email: str):
+        await RefreshToken.delete_from_email(session, email)

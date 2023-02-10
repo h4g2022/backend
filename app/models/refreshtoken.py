@@ -43,3 +43,10 @@ class RefreshToken(Base):
 
         except SQLAlchemyExceptions.NoResultFound:
             return None
+
+    @classmethod
+    async def delete_from_email(cls, session: AsyncSession, email: str):
+        stmt = delete(RefreshToken).where(RefreshToken.email == email)
+        result = await session.execute(stmt)
+        await session.commit()
+        return result
