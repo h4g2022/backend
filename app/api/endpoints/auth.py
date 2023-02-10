@@ -23,7 +23,7 @@ router = APIRouter()
 @router.post("/create", response_model=UserLoginResponseSchema)
 async def auth_create(data: UserSchema, session: AsyncSession = Depends(get_session)):
     res = await Authenticator.register(session, data.email, data.password, data.type)
-    if res.type == UserType.patient:
+    if res.type == UserType.talent:
         new_talent = Talent(user_id=res.user_id)
         await new_talent.save(session)
     elif res.type == UserType.employer:

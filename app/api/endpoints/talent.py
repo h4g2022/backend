@@ -55,7 +55,7 @@ async def get_self_talent(
     user: User = Depends(Authenticator.get_current_user),
     session: AsyncSession = Depends(get_session)
 ):
-    if user.type != UserType.patient:
+    if user.type != UserType.talent:
         raise AppError.WRONG_USER_TYPE_ERROR
     talent = await Talent.fetch_with_uid(session, user.user_id)
     if not talent:

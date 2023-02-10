@@ -4,7 +4,7 @@ from pydantic.networks import EmailStr
 
 
 class UserType(str, Enum):
-    patient = "patient"
+    talent = "talent"
     employer = "employer"
 
 

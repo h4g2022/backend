@@ -97,7 +97,7 @@ class Authenticator:
             if not user:
                 raise AppError.CREDENTIALS_ERROR
             registered = False
-            if user.type == UserType.patient:
+            if user.type == UserType.talent:
                 registered = await Talent.check_talent_reg(session, user.user_id)
             elif user.type == UserType.employer:
                 registered = await Employer.check_employer_reg(session, user.user_id)
